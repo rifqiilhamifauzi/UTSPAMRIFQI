@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="lat.pam.myrecyclerviewdicoding.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/orderFragment"
+        android:name="lat.pam.myrecyclerviewdicoding.OrderFragment"
+        android:label="fragment_order"
+        tools:layout="@layout/fragment_order" />
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="lat.pam.myrecyclerviewdicoding.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="lat.pam.myrecyclerviewdicoding.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
+
+    <fragment
+        android:id="@+id/shippingFragment"
+        android:name="lat.pam.myrecyclerviewdicoding.ShippingFragment"
+        android:label="fragment_shipping"
+        tools:layout="@layout/fragment_shipping" />
+
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="lat.pam.myrecyclerviewdicoding.SuccessFragment"
+        android:label="fragment_success"
+        tools:layout="@layout/fragment_success" />
+
+</navigation>

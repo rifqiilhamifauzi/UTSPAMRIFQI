@@ -1,88 +1,58 @@
-package lat.pam.myrecyclerviewdicoding
+package lat.pam.myrecyclerviewdicoding // Sesuaikan package Anda
 
-import android.annotation.SuppressLint
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.os.Bundle
+import android.view.View
+import androidx.activity.viewModels // Import ini sudah benar
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import lat.pam.myrecyclerviewdicoding.R
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var rvHeroes: RecyclerView
-    private val list = ArrayList<Hero>()
 
-    @SuppressLint("MissingInflatedId")
+    // --- PINDAHKAN KE SINI ---
+    // Ini harus dideklarasikan di level Class, BUKAN di dalam onCreate
+    private val cartViewModel: CartViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+
+        // 1. Hubungkan ke layout "cangkang"
         setContentView(R.layout.activity_main)
 
-        rvHeroes = findViewById(R.id.rv_heroes)
-        rvHeroes.setHasFixedSize(true)
+        // 2. Hilangkan ActionBar (karena kita pakai desain baru)
+        supportActionBar?.hide()
 
-        list.addAll(getListHeroes())
-        showRecyclerList()
+        // 3. Temukan komponen dari activity_main.xml
+        // --- Baris ViewModel dihapus dari sini ---
+        val bottomNavView = findViewById<BottomNavigationView>(R.id.bottom_nav_view)
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        // 4. Sambungkan Bottom Nav dengan Nav Controller
+        // Ini yang membuat ikon menu bisa diklik untuk pindah fragment
+        bottomNavView.setupWithNavController(navController)
 
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-    }
+        // --- Blok listener Anda (sudah benar, biarkan saja) ---
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            // Cek ID halaman tujuan
+            when (destination.id) {
+                // Jika tujuannya 3 menu utama, TAMPILKAN menu bawah
+                R.id.homeFragment,
+                R.id.orderFragment,
+                R.id.profileFragment -> {
+                    bottomNavView.visibility = View.VISIBLE
+                }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_list -> {
-                rvHeroes.layoutManager = LinearLayoutManager(this)
+                // Jika tujuannya halaman lain (Checkout, Shipping, dll), SEMBUNYIKAN
+                else -> {
+                    bottomNavView.visibility = View.GONE
+                }
             }
-
-            R.id.action_grid -> {
-                rvHeroes.layoutManager = GridLayoutManager(this, 2)
-            }
         }
-        return super.onOptionsItemSelected(item)
+        // --- BATAS BLOK KODE BARU ---
     }
-
-
-    private fun getListHeroes(): ArrayList<Hero> {
-        val dataName = resources.getStringArray(R.array.data_name)
-        val dataDescription = resources.getStringArray(R.array.data_description)
-        val dataPhoto = resources.getStringArray(R.array.data_photo)
-        val listHero = ArrayList<Hero>()
-        for (i in dataName.indices) {
-            val hero = Hero(dataName[i], dataDescription[i], dataPhoto[i])
-            listHero.add(hero)
-        }
-        return listHero
-    }
-
-    private fun showRecyclerList() {
-        rvHeroes.layoutManager = LinearLayoutManager(this)
-        val listHeroAdapter = ListHeroAdapter(list)
-        rvHeroes.adapter = listHeroAdapter
-
-        listHeroAdapter.setOnItemClickCallback(object : ListHeroAdapter.OnItemClickCallback {
-            override fun onItemClicked(data: Hero) {
-                showSelectedHero(data)
-            }
-        })
-    }
-
-    private fun showSelectedHero(hero: Hero) {
-        Toast.makeText(this, "Kamu memilih " + hero.name, Toast.LENGTH_SHORT).show()
-    }
-
-
 }
